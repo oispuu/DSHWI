@@ -39,6 +39,9 @@ if __name__ == '__main__':
     parser.add_argument('-f','--file', metavar='name', type=str,\
 						help='Use this to create a file',\
 						default='')
+    parser.add_argument('-o', '--open', metavar='name', type=str,\
+                        help='Open file for editing',\
+                        default='')
     args = parser.parse_args()
     # Run Mboard Client
     mboard_client_main(args)

@@ -30,7 +30,7 @@ FORMAT = '%(asctime)-15s %(levelname)s %(message)s'
 logging.basicConfig(level=logging.DEBUG,format=FORMAT)
 LOG = logging.getLogger()
 # Imports----------------------------------------------------------------------
-from tcp.mboard.sessions.common import  __REQ_PUBLISH,__REQ_CREATE,\
+from tcp.mboard.sessions.common import  __REQ_PUBLISH,__REQ_CREATE, __REQ_OPEN,\
      __RSP_OK, __REQ_GET_N_LAST, __RSP_ERRTRANSM, __RSP_CANT_CONNECT,\
      __CTR_MSGS, tcp_send, tcp_receive, MBoardProtocolError, __MSG_FIELD_SEP,\
      __ERR_MSGS
@@ -160,6 +160,13 @@ def last(srv,n):
     err,msgs = __request(srv, __REQ_GET_N_LAST, [n])
     return msgs if err == __RSP_OK else []
 def create_file(srv,file_name):
-	msg = file_name.encode('utf-8');
+	msg = file_name.encode('utf-8')
 	err,confirm = __request(srv, __REQ_CREATE, [msg])
 	return confirm if err == __RSP_OK else "ERROR"
+    
+def open_file(srv,file_name):
+    msg = file_name.encode('utf-8')
+    LOG.debug('Before request')
+    err,confirm = __request(srv, __REQ_OPEN, [msg])
+    LOG.debug('After request')
+    return confirm if err == __RSP_OK else []

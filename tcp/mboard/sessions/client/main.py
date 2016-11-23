@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.DEBUG,format=FORMAT)
 LOG = logging.getLogger()
 # Needed imports ------------------ -------------------------------------------
 from tcp.mboard.sessions.client import protocol
-from tcp.mboard.sessions.client.protocol import publish, last, create_file
+from tcp.mboard.sessions.client.protocol import publish, last, create_file, open_file
 from time import localtime, asctime
 from sys import stdin
 # Constants -------------------------------------------------------------------
@@ -79,6 +79,12 @@ def mboard_client_main(args):
 	# Parse filename
     f = str(args.file)
     LOG.debug('Processing filename %s', f);
+    
+    # Processing arguments
+	# 4.) If -o was provided
+	# Parse filename
+    o = str(args.open)
+    LOG.debug('Processing filename for opening %s', f);
 
     # Server's socket address
     server = (args.host,int(args.port))
@@ -101,6 +107,16 @@ def mboard_client_main(args):
                 LOG.info('File saved')
             else:
                 exit(3)
+                
+        if len(o) > 0:
+            msgs += open_file(server, o)
+            if len(msgs)>0:
+                LOG.info('Opened file %s...', o)
+                print 'Board published messages:'
+                print ''.join(msgs)
+                exit(3)
+            else:
+                exit(3)
     except KeyboardInterrupt:
             LOG.debug('Crtrl+C issued ...')
             LOG.info('Terminating ...')
@@ -112,7 +128,7 @@ def mboard_client_main(args):
     # Consider 1-st 3 elements: timestamp, ip and port,
     # and thr rest is the actual message
     msgs = map(lambda x: tuple(x[:3]+[' '.join(x[3:])]),msgs)
-
+    LOG.debug('Right before entering if')
     if len(msgs) > 0:
         t_form = lambda x: asctime(localtime(float(x)))
         m_form = lambda x: '%s [%s:%s] -> '\

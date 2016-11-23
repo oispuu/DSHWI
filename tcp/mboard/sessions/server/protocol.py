@@ -32,7 +32,7 @@ LOG = logging.getLogger()
 # Imports----------------------------------------------------------------------
 from exceptions import ValueError # for handling number format exceptions
 from tcp.mboard.sessions.common import __RSP_BADFORMAT,\
-     __REQ_PUBLISH, __REQ_CREATE, __MSG_FIELD_SEP, __RSP_OK, __REQ_LAST,\
+     __REQ_PUBLISH, __REQ_CREATE, __REQ_OPEN, __MSG_FIELD_SEP, __RSP_OK, __REQ_LAST,\
      __REQ_GET, __RSP_MSGNOTFOUND, __RSP_UNKNCONTROL, __REQ_GET_N_LAST
 from socket import error as soc_err
 # Constants -------------------------------------------------------------------
@@ -136,6 +136,19 @@ def server_process(board,message,source,oldprotocol=False):
 		file = open(f, 'w')
 		file.close()
 		return __RSP_OK
+    elif message.startswith(__REQ_OPEN + __MSG_FIELD_SEP):
+        s=message[2:]
+        try:
+            f = str(s)
+            LOG.debug('Client requests to open file %s' % f)
+        except ValueError:
+            LOG.debug('String required, %s received' % s)
+            return __RSP_BADFORMAT
+        file = open(f, 'r')
+        msgs = file.read()
+        LOG.debug(msgs)
+        file.close()
+        return __MSG_FIELD_SEP.join((__RSP_OK,)+tuple(msgs))
     else:
         LOG.debug('Unknown control message received: %s ' % message)
         return __RSP_UNKNCONTROL

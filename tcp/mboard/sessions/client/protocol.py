@@ -33,7 +33,7 @@ LOG = logging.getLogger()
 from tcp.mboard.sessions.common import  __REQ_PUBLISH,__REQ_CREATE, __REQ_OPEN,\
      __RSP_OK, __REQ_GET_N_LAST, __RSP_ERRTRANSM, __RSP_CANT_CONNECT,\
      __CTR_MSGS, tcp_send, tcp_receive, MBoardProtocolError, __MSG_FIELD_SEP,\
-     __ERR_MSGS
+     __ERR_MSGS, __REQ_UPDATE
 from socket import socket, AF_INET, SOCK_STREAM
 from socket import error as soc_err
 # Constants -------------------------------------------------------------------
@@ -170,3 +170,9 @@ def open_file(srv,file_name):
     err,confirm = __request(srv, __REQ_OPEN, [msg])
     LOG.debug('After request')
     return confirm if err == __RSP_OK else []
+
+def update_file(srv,f,m):
+    file = f.encode('utf-8')
+    msg = m.encode('utf-8')
+    err,confirm = __request(srv, __REQ_UPDATE, [file,msg])
+    return confirm if err == __RSP_OK else "ERROR"

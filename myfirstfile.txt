@@ -3,3 +3,5 @@ is
 the
 	first
 test.
+This is another test
+apple

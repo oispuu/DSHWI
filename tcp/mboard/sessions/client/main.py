@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.DEBUG,format=FORMAT)
 LOG = logging.getLogger()
 # Needed imports ------------------ -------------------------------------------
 from tcp.mboard.sessions.client import protocol
-from tcp.mboard.sessions.client.protocol import publish, last, create_file, open_file
+from tcp.mboard.sessions.client.protocol import publish, last, create_file, open_file, update_file
 from time import localtime, asctime
 from sys import stdin
 # Constants -------------------------------------------------------------------
@@ -92,7 +92,7 @@ def mboard_client_main(args):
     msgs = []
 
     try:
-        if len(m) > 0:
+        if len(m) > 0 and len(f) == 0:
             if publish(server, m):
                 LOG.info('Message published')
             else:
@@ -102,9 +102,14 @@ def mboard_client_main(args):
         # With TCP we may get all messages in one request
         msgs += last(server,n)
 		
-        if len(f) > 0:
+        if len(f) > 0 and len(m) == 0:
             if create_file(server, f):
                 LOG.info('File saved')
+            else:
+                exit(3)
+        elif len(f) > 0 and len(m) > 0:
+            if update_file(server, f, m):
+                LOG.info('File updated')
             else:
                 exit(3)
                 

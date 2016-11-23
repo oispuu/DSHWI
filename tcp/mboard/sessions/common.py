@@ -39,12 +39,14 @@ __REQ_GET = '3'
 __REQ_GET_N_LAST = '4'
 __REQ_CREATE = '5'
 __REQ_OPEN = '6'
+__REQ_UPDATE = '7'
 __CTR_MSGS = { __REQ_GET:'Get message by id',
                __REQ_LAST:'Get iDs of last N messages',
                __REQ_PUBLISH:'Publish new message',
                __REQ_GET_N_LAST:'Get last N messages',
                __REQ_CREATE:'Create new file',
-               __REQ_OPEN:'Open file for editing'
+               __REQ_OPEN:'Open file for editing',
+               __REQ_UPDATE:'Update file contents'
               }
 # Responses--------------------------------------------------------------------
 __RSP_OK = '0'

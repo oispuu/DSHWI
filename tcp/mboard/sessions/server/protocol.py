@@ -33,7 +33,8 @@ LOG = logging.getLogger()
 from exceptions import ValueError # for handling number format exceptions
 from tcp.mboard.sessions.common import __RSP_BADFORMAT,\
      __REQ_PUBLISH, __REQ_CREATE, __REQ_OPEN, __MSG_FIELD_SEP, __RSP_OK, __REQ_LAST,\
-     __REQ_GET, __RSP_MSGNOTFOUND, __RSP_UNKNCONTROL, __REQ_GET_N_LAST
+     __REQ_GET, __RSP_MSGNOTFOUND, __RSP_UNKNCONTROL, __REQ_GET_N_LAST,\
+     __REQ_UPDATE
 from socket import error as soc_err
 # Constants -------------------------------------------------------------------
 ___NAME = 'MBoard Protocol'
@@ -149,6 +150,25 @@ def server_process(board,message,source,oldprotocol=False):
         LOG.debug(msgs)
         file.close()
         return __MSG_FIELD_SEP.join((__RSP_OK,)+tuple(msgs))
+    elif message.startswith(__REQ_UPDATE + __MSG_FIELD_SEP):
+        LOG.debug(message)
+        splits=message[2:].split(__MSG_FIELD_SEP)
+        f=splits[0]
+        m=splits[1]
+        try:
+            f=str(f)
+            m=str(m)
+            LOG.debug('Client requests to update file %s' % f)
+        except ValueError:
+            LOG.debug('String required, %s received' % s)
+            return __RSP_BADFORMAT
+        file = open(f, 'r+')
+        msgs = file.read()
+        new_msg = msgs + '\n' + m
+        file.seek(0)
+        file.write(str(new_msg))
+        file.close()
+        return __RSP_OK
     else:
         LOG.debug('Unknown control message received: %s ' % message)
         return __RSP_UNKNCONTROL

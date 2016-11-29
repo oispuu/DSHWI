@@ -1,7 +1,63 @@
-This
-is
-the
-	first
-test.
-This is another test
-apple
+A test file
+
+containing  a tab
+    and some
+    
+ other formats
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

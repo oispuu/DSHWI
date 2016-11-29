@@ -164,11 +164,12 @@ def server_process(board,message,source,oldprotocol=False):
             return __RSP_BADFORMAT
         file = open(f, 'r+')
         msgs = file.read()
-        new_msg = msgs + '\n' + m
+        # new_msg = msgs + '\n' + m
+        new_msg = m
         file.seek(0)
         file.write(str(new_msg))
         file.close()
-        return __RSP_OK
+        return __MSG_FIELD_SEP.join((__RSP_OK,)+tuple(new_msg))
     else:
         LOG.debug('Unknown control message received: %s ' % message)
         return __RSP_UNKNCONTROL

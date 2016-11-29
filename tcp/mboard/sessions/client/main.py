@@ -108,8 +108,11 @@ def mboard_client_main(args):
             else:
                 exit(3)
         elif len(f) > 0 and len(m) > 0:
-            if update_file(server, f, m):
-                LOG.info('File updated')
+            msgs += update_file(server, f, m)
+            if len(msgs)>0:
+                LOG.info('Updated file %s...', o)
+                print ''.join(msgs)
+                exit(3)
             else:
                 exit(3)
                 
